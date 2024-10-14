@@ -1,3 +1,5 @@
+<link href="../resources/css/app.css">
+
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -31,8 +33,10 @@ Route::get('/contact', function() {
 //})->name('products');
 Route::resource('products', ProductController::class);
 
-
+//
 Route::get('about-us', [AboutUsController::class, 'Show'])->name('about-us');
-
+//Route::get('/about', function () {
+//    return view('about-us');
+//})->name('about');
 
 require __DIR__.'/auth.php';
