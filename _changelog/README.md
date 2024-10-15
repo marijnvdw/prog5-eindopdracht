@@ -1,3 +1,7 @@
+## 15 - 10 - 2024
+Database aangemaakt en data toegevoegd.
+De data is ook te zien op de location view.
+
 ## 14 - 10 - 2024
 Uitleg gekregen over components en die toegepast.
 Login requirements toegevoegd aan about page.
