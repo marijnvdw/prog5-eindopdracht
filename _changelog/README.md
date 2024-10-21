@@ -1,3 +1,6 @@
+## 17 - 10 - 2024
+Database aangepast en data toegevoegd.
+
 ## 15 - 10 - 2024
 Database aangemaakt en data toegevoegd.
 De data is ook te zien op de location view.

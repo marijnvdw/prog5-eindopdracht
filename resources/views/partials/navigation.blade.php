@@ -8,11 +8,12 @@
         <nav class="-mx-3 flex flex-1 justify-end">
             @auth
                 <x-nav-link href="{{ route('dashboard') }}" :active="request()->is('dashboard')">dashboard</x-nav-link>
+
+                <x-nav-link href="{{ route('locations.create') }}" :active="request()->is('locations.create')">Create</x-nav-link>
             @else
-                <x-nav-link href="{{ route('login') }}" :active="request()->is('login')">login</x-nav-link>
-                @if (Route::has('register'))
-                    <x-nav-link href="{{ route('register') }}" :active="request()->is('register')">register</x-nav-link>
-                @endif
+                <x-nav-link href="{{ route('login') }}" :active="request()->is('login')">Login</x-nav-link>
+
+                <x-nav-link href="{{ route('register') }}" :active="request()->is('register')">Register</x-nav-link>
             @endauth
         </nav>
     @endif

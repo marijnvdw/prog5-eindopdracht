@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="css/main.css">
+
 <?php
 
 use Illuminate\Http\Request;
