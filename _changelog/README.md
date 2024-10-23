@@ -1,3 +1,11 @@
+## 23 - 10 - 2024
+Aanpassingen aan UI.
+Beveiligingen toegevoegd.
+
+## 22 - 10 - 2024
+Edit page toegevoegd.
+Delete functie toegevoegd.
+
 ## 17 - 10 - 2024
 Database aangepast en data toegevoegd.
 

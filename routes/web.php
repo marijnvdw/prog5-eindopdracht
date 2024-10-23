@@ -23,15 +23,16 @@ Route::middleware('auth')->group(function () {
 Route::get('about-us', [AboutUsController::class, 'Show'])->name('about-us');
 
 Route::resource('/', LocationController::class);
-Route::resource('locations', LocationController::class)->names([
-    'index' => 'locations.index',
-    'create' => 'locations.create',
-    'store' => 'locations.store',
-    'show' => 'locations.show',
-    'edit' => 'locations.edit',
-    'update' => 'locations.update',
-    'destroy' => 'locations.destroy',
-]);
+Route::resource('locations', LocationController::class);//->names([
+//    'index' => 'locations.index',
+//    'create' => 'locations.create',
+//    'store' => 'locations.store',
+//    'show' => 'locations.show',
+//    'edit' => 'locations.edit',
+//    'update' => 'locations.update',
+//    'destroy' => 'locations.destroy',
+//]);
+
 Route::get('locations/create', [LocationController::class, 'create'])->name('locations.create');
 
 require __DIR__.'/auth.php';
