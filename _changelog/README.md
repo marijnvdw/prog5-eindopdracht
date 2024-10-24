@@ -1,3 +1,6 @@
+## 24 - 10 - 2024
+Toggle voor filter toegevoegd.
+
 ## 23 - 10 - 2024
 Aanpassingen aan UI.
 Beveiligingen toegevoegd.
