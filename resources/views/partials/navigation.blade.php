@@ -11,7 +11,7 @@
                 <!-- Pupil -->
                 <circle cx="75" cy="55" r="10" fill="#000000"/>
             </svg>
-            <span class="font-semibold text-xl tracking-tight ml-3">Location Tracker</span>
+            <span class="font-semibold text-xl tracking-tight ml-3">Location Finder</span>
         </div>
     </a>
     <!-- Mobile Menu Button -->

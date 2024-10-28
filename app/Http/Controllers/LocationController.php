@@ -11,9 +11,29 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $locations = Location::all();
+        $categoryIds = $request->input('categories', []);  // Default to empty array if no categories are selected
+        $searchTerm = $request->input('search-term');
+
+        $query = Location::query();
+
+        // Filter by selected categories if any are selected
+        if (!empty($categoryIds)) {
+            $query->whereIn('category_id', $categoryIds);
+        }
+
+        // Filter by search term if provided
+        if (!empty($searchTerm)) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $locations = $query->get();
+
+//        $locations = Location::all();
         $categories = Category::all();
         return view('locations', compact('locations'), compact('categories'));
     }

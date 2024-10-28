@@ -1,3 +1,6 @@
+## 28 - 10 - 2024
+Filter functie toegevoegd.
+
 ## 24 - 10 - 2024
 Toggle voor filter toegevoegd.
 

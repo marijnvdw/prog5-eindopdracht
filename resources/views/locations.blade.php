@@ -1,28 +1,31 @@
 <x-layout title="Locations">
-
-    <div class="mb-4">
-        <p>Filters</p>
+    <form action="{{ route('locations.index') }}" method="GET">
+        <p>Filters:</p>
         <div class="flex space-x-2">
             @foreach($categories as $category)
-                @php
-                    // Check if this category is selected by looking at the query string
-                    $selectedCategories = request()->query('categories') ? explode(',', request()->query('categories')) : [];
-                    $isSelected = in_array($category->id, $selectedCategories);
-                @endphp
-
-                    <!-- Button to toggle category selection -->
-                <a href="{{ route('locations.index', ['categories' => toggleCategory($category->id, request()->query('categories'))]) }}"
-                   class="px-4 py-2 rounded-lg {{ $isSelected ? 'bg-blue-700 text-white' : 'bg-blue-500 text-white hover:bg-blue-700' }}">
-                    {{ $category->name }}
-                </a>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="categories[]" value="{{ $category->id }}"
+                        {{ in_array($category->id, request()->input('categories', [])) ? 'checked' : '' }}>
+                    <span class="ml-2">{{ $category->name }}</span>
+                </label>
             @endforeach
-
-            <!-- "All" Button to Reset Filters -->
-            <a href="{{ route('locations.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                All
-            </a>
         </div>
-    </div>
+
+        <!-- Search term input field (optional) -->
+        <div class="mt-4">
+            <input type="text" name="search-term" placeholder="Search locations..."
+                   value="{{ request()->input('search-term') }}" class="border border-gray-300 rounded-md p-2">
+        </div>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700">
+            Apply Filters
+        </button>
+
+        <!-- Optional: "Clear Filters" button to reset filters -->
+        <a href="{{ route('locations.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-700">
+            Clear Filters
+        </a>
+    </form>
 
 
 

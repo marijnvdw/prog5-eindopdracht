@@ -16,6 +16,7 @@
 
             <div
                 style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                <p>{{ $location->description }}</p> <br>
                 <h2 style="font-size: 24px; color: #34495e; font-family: 'Arial', sans-serif;">Location Details</h2>
                 <ul style="list-style: none; padding: 0;">
                     <li><strong>Address:</strong> {{ $location->address }}</li>
