@@ -33,6 +33,11 @@ Route::resource('locations', LocationController::class);//->names([
 //    'destroy' => 'locations.destroy',
 //]);
 
+// Make sure this route exists in web.php
+Route::post('/items/{id}/toggle-status', [LocationController::class, 'toggleStatus'])->name('item.toggleStatus');
+
+
+
 Route::get('locations/create', [LocationController::class, 'create'])->name('locations.create');
 
 require __DIR__.'/auth.php';

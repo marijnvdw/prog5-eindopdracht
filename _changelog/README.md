@@ -1,3 +1,6 @@
+## 29 - 10 - 2024
+Active toggle toegevoegd.
+
 ## 28 - 10 - 2024
 Filter functie toegevoegd.
 

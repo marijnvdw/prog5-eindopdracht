@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Location;
 use App\Models\Category;
 
@@ -18,6 +19,12 @@ class LocationController extends Controller
 
         $query = Location::query();
 
+
+        // Filter by status based on user role
+        if (!auth()->check() || auth()->user()->admin == 0) {
+            $query->where('status', 1);  // Only active buildings for non-admins
+        }
+
         // Filter by selected categories if any are selected
         if (!empty($categoryIds)) {
             $query->whereIn('category_id', $categoryIds);
@@ -25,17 +32,16 @@ class LocationController extends Controller
 
         // Filter by search term if provided
         if (!empty($searchTerm)) {
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('description', 'like', '%' . $searchTerm . '%');
             });
         }
 
         $locations = $query->get();
-
-//        $locations = Location::all();
         $categories = Category::all();
         return view('locations', compact('locations'), compact('categories'));
+
     }
 
     /**
@@ -43,8 +49,12 @@ class LocationController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        return view('create', compact('categories'));
+        if (request()->user()) {
+            $categories = Category::all();
+            return view('create', compact('categories'));
+        } else {
+            return abort(404);
+        }
     }
 
     /**
@@ -67,7 +77,7 @@ class LocationController extends Controller
             $image = $request->file('image');
             $imagePath = $image->store('locations', 'public');  // Store in the 'locations' folder in the public disk
         } else {
-            $imagePath = null;  // If no image is uploaded
+            $imagePath = null;
         }
 
         $location = new Location();
@@ -79,7 +89,6 @@ class LocationController extends Controller
         $location->city = $request->input('city');
         $location->image = $imagePath;
         $location->category_id = $request->input('category_id');
-        //$location->user_id = $request->input('user_id');
         $location->user_id = request()->user()->id;
         $location->save();// ->error('success', 'Location added successfully!');
 
@@ -158,13 +167,23 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-
         $location = Location::findOrFail($id);  // Find the location by its ID
         $location->delete();  // Delete the location
 
         return redirect()->route('locations.index')->with('success', 'Location deleted successfully!');  // Redirect back to the list with a success message
-
     }
+
+    public function toggleStatus($id)
+    {
+        $location = Location::findOrFail($id);
+
+        // Toggle the status
+        $location->status = !$location->status;
+        $location->save();
+
+        return redirect()->back()->with('status', 'Item status updated successfully!');
+    }
+
 
 
 }

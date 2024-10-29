@@ -22,11 +22,11 @@
         </button>
 
         <!-- Optional: "Clear Filters" button to reset filters -->
-        <a href="{{ route('locations.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-700">
+        <a href="{{ route('locations.index') }}"
+           class="bg-gray-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-700">
             Clear Filters
         </a>
     </form>
-
 
 
     <div class="flex flex-wrap -mx-4">
@@ -35,7 +35,8 @@
                 <div class="bg-gray-100 p-4 rounded-lg shadow-lg">
                     <!-- Location Image (If Available) -->
                     @if ($location->image)
-                        <img src="{{ asset('storage/' . $location->image) }}" alt="{{ $location->name }}" class="w-32 h-auto mb-4 rounded-lg shadow-md">
+                        <img src="{{ asset('storage/' . $location->image) }}" alt="{{ $location->name }}"
+                             class="w-32 h-auto mb-4 rounded-lg shadow-md">
                     @endif
 
                     <!-- Location Name -->
@@ -54,8 +55,47 @@
                     <p class="text-sm text-gray-500 mt-2">
                         Created at: {{ $location->created_at->format('F j, Y') }}
                     </p>
+                    @if(Auth::user())
+                        @if(Auth::user()->admin === 1 || (Auth::user()->id === $location->user_id && Auth::user()->locations()->where('status', 1)->count() >= 1))
+                            <!-- Toggle Button -->
+                            <button
+                                class="px-4 py-2 rounded-lg {{ $location->status ? 'bg-green-500' : 'bg-gray-500' }} text-white toggle-status"
+                                data-id="{{ $location->id }}"
+
+                            >{{ $location->status ? 'Active' : 'Inactive' }}</button>
+                        @endif
+                    @endif
+
                 </div>
             </div>
         @endforeach
+
+        <!-- AJAX Script -->
+        <script>
+            document.querySelectorAll('.toggle-status').forEach(button => {
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id');
+
+                    fetch(`/items/${itemId}/toggle-status`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    })
+                        // .then(response => response.json())
+                        .then(data => {
+                            // Update button text and color based on new status
+                            this.classList.toggle('bg-green-500');
+                            this.classList.toggle('bg-gray-500');
+                            console.log(this.textContent);
+                            this.textContent = this.textContent === 'Active' ? 'Inactive' : 'Active';
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+        </script>
+
     </div>
 </x-layout>
