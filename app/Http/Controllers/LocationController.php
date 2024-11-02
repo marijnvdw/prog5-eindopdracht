@@ -20,9 +20,32 @@ class LocationController extends Controller
         $query = Location::query();
 
 
-        // Filter by status based on user role
-        if (!auth()->check() || auth()->user()->admin == 0) {
-            $query->where('status', 1);  // Only active buildings for non-admins
+        if (!auth()->check()) {
+            // If not logged in, show only active locations
+            $query->where('status', 1);
+        } else {
+            $user = auth()->user();
+
+            if ($user->admin === 1) {
+                // If admin, show all locations (no status filter needed)
+            } else {
+                // Check if the user has at least 3 active locations
+                $hasThreeActiveLocations = $user->locations()->where('status', 1)->count() >= 3;
+
+                if ($hasThreeActiveLocations) {
+                    // Show all active locations and this user's inactive locations
+                    $query->where(function ($q) use ($user) {
+                        $q->where('status', 1)  // Active locations
+                        ->orWhere(function ($q2) use ($user) {
+                            $q2->where('status', 0)
+                                ->where('user_id', $user->id);  // User's own inactive locations
+                        });
+                    });
+                } else {
+                    // If the user does not meet the criteria, show only active locations
+                    $query->where('status', 1);
+                }
+            }
         }
 
         // Filter by selected categories if any are selected
@@ -101,9 +124,7 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-//        $location = Location::find($id);
-//        return view('details', compact('location'));
-        $location = Location::with('category', 'user')->findOrFail($id);  // Eager load category and user
+        $location = Location::with('category', 'user')->findOrFail($id);
         return view('details', compact('location'));
     }
 
@@ -112,9 +133,18 @@ class LocationController extends Controller
      */
     public function edit($id)
     {
-        $location = Location::findOrFail($id);  // Retrieve the location by ID, or fail if not found
-        $categories = Category::all();  // Assuming you need categories for a dropdown
-        return view('edit_location', compact('location', 'categories'));  // Pass the location and categories to the view
+
+        $location = Location::findOrFail($id);
+        $categories = Category::all();
+        if (auth()->check()) {
+            if (request()->user()->admin === 1 || ($location->user_id === request()->user()->id)) {
+                return view('edit_location', compact('location', 'categories'));
+            } else {
+                return abort(404);
+            }
+        } else {
+            return abort(404);
+        }
     }
 
     /**
@@ -183,7 +213,6 @@ class LocationController extends Controller
 
         return redirect()->back()->with('status', 'Item status updated successfully!');
     }
-
 
 
 }

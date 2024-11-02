@@ -1,3 +1,8 @@
+## 02 - 11 - 2024
+Schakelen van status toegevoegd
+Diepere validatie toegevoegd.
+Beveiligingen toegepast.
+
 ## 29 - 10 - 2024
 Active toggle toegevoegd.
 

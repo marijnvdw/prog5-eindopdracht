@@ -33,35 +33,31 @@
         @foreach($locations as $location)
             <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-6">
                 <div class="bg-gray-100 p-4 rounded-lg shadow-lg">
-                    <!-- Location Image (If Available) -->
+
                     @if ($location->image)
                         <img src="{{ asset('storage/' . $location->image) }}" alt="{{ $location->name }}"
                              class="w-32 h-auto mb-4 rounded-lg shadow-md">
                     @endif
 
-                    <!-- Location Name -->
                     <h2 class="text-xl font-bold mb-2">
                         <a href="{{route('locations.show', $location->id)}}" class="text-blue-500 hover:text-blue-700">
                             {{$location->name}}
                         </a>
                     </h2>
 
-                    <!-- Optional location details (e.g., address, city, etc.) -->
                     <p class="text-gray-600">
                         {{$location->city}}, {{$location->country}}
                     </p>
 
-                    <!-- Optional created at timestamp -->
                     <p class="text-sm text-gray-500 mt-2">
                         Created at: {{ $location->created_at->format('F j, Y') }}
                     </p>
                     @if(Auth::user())
-                        @if(Auth::user()->admin === 1 || (Auth::user()->id === $location->user_id && Auth::user()->locations()->where('status', 1)->count() >= 1))
-                            <!-- Toggle Button -->
+{{--                        If Auth is Admin OR (Auth id is the same as the created item AND Auth has at least 3 active items)--}}
+                        @if(Auth::user()->admin === 1 || (Auth::user()->id === $location->user_id && Auth::user()->locations()->where('status', 1)->count() >= 3))
                             <button
                                 class="px-4 py-2 rounded-lg {{ $location->status ? 'bg-green-500' : 'bg-gray-500' }} text-white toggle-status"
                                 data-id="{{ $location->id }}"
-
                             >{{ $location->status ? 'Active' : 'Inactive' }}</button>
                         @endif
                     @endif
