@@ -11,17 +11,18 @@
             @endforeach
         </div>
 
-        <!-- Search term input field (optional) -->
+        <!-- Search term input field -->
         <div class="mt-4">
             <input type="text" name="search-term" placeholder="Search locations..."
                    value="{{ request()->input('search-term') }}" class="border border-gray-300 rounded-md p-2">
         </div>
 
+        <!-- Apply filters button -->
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700">
             Apply Filters
         </button>
 
-        <!-- Optional: "Clear Filters" button to reset filters -->
+        <!-- Clear filters button -->
         <a href="{{ route('locations.index') }}"
            class="bg-gray-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-700">
             Clear Filters
@@ -52,8 +53,14 @@
                     <p class="text-sm text-gray-500 mt-2">
                         Created at: {{ $location->created_at->format('F j, Y') }}
                     </p>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        Creator: {{ $location->user->name }}
+                    </p>
+
+
                     @if(Auth::user())
-{{--                        If Auth is Admin OR (Auth id is the same as the created item AND Auth has at least 3 active items)--}}
+                        {{--                        If Auth is Admin OR (Auth id is the same as the created item AND Auth has at least 3 active items)--}}
                         @if(Auth::user()->admin === 1 || (Auth::user()->id === $location->user_id && Auth::user()->locations()->where('status', 1)->count() >= 3))
                             <button
                                 class="px-4 py-2 rounded-lg {{ $location->status ? 'bg-green-500' : 'bg-gray-500' }} text-white toggle-status"
@@ -80,7 +87,7 @@
                         },
                         body: JSON.stringify({})
                     })
-                        // .then(response => response.json())
+
                         .then(data => {
                             // Update button text and color based on new status
                             this.classList.toggle('bg-green-500');

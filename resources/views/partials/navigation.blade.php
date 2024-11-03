@@ -35,12 +35,13 @@
                         Dashboard
                     </x-nav-link>
                     <x-nav-link href="{{ route('locations.create') }}" :active="request()->is('locations.create')"
-                                class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4">
-                        Create
+                                class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4">Create
                     </x-nav-link>
                     @if (Auth::user()->admin === 1)
-                        <p class="text-white block mt-4 lg:inline-block lg:mt-0 mr-4">You are an Admin</p>
-                    @endif
+                        <x-nav-link href="{{ route('admin') }}" :active="request()->is('admin')"
+                                    class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4">Admin page
+                        </x-nav-link>                    @endif
+
                 @else
                     <x-nav-link href="{{ route('login') }}" :active="request()->is('login')"
                                 class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4">

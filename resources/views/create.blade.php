@@ -61,18 +61,11 @@
             <input type="text" id="city" name="city" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter city" value="{{ old('city') }}">
         </div>
 
-        <!-- Image URL Field -->
-{{--        <div class="mb-4">--}}
-{{--            <label for="image" class="block text-sm font-medium text-gray-700">Image URL</label>--}}
-{{--            <input type="text" id="image" name="image" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter image URL" value="{{ old('image') }}">--}}
-{{--        </div>--}}
-
+        <!-- Image Field -->
         <div class="mb-4">
             <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
             <input type="file" id="image" name="image" class="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
         </div>
-
-
 
         <!-- Category Field -->
         <div class="mb-4">

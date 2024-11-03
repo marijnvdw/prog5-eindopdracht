@@ -61,7 +61,7 @@
             <input type="text" id="city" name="city" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter city" value="{{ old('city', $location->city) }}">
         </div>
 
-        <!-- Display Current Image (Optional) -->
+        <!-- Display Current Image -->
         @if ($location->image)
             <div class="mb-4">
                 <img src="{{ asset('storage/' . $location->image) }}" alt="{{ $location->name }}" class="w-32 h-32 rounded-lg shadow-md">

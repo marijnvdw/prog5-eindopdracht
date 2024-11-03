@@ -1,3 +1,7 @@
+## 03 - 11 - 2024
+Code opgeschoond.
+Admin page aanpassingen aangemaakt
+
 ## 02 - 11 - 2024
 Schakelen van status toegevoegd
 Diepere validatie toegevoegd.

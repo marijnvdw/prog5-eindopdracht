@@ -4,11 +4,8 @@
     <div style="margin-bottom: 20px;">
         <a href="{{ route('locations.index') }}" class="back-link">&larr; Back to Locations</a>
     </div>
-
-    <!-- Main Content Wrapper with Flexbox for Left (Info) and Right (Image) Columns -->
     <div style="display: flex; align-items: flex-start; gap: 20px;">
-
-        <!-- Location Details (Left Side) -->
+        <!-- Location Details -->
         <div style="flex: 1;">
             <h1 style="font-size: 32px; color: #2c3e50; font-family: 'Arial', sans-serif; margin-bottom: 10px;">
                 {{ $location->name }}
@@ -32,11 +29,12 @@
                             <li><strong>Created At:</strong> {{ $location->created_at->format('F j, Y, g:i a') }}</li>
                             <li><strong>Last Updated:</strong> {{ $location->updated_at->format('F j, Y, g:i a') }}</li>
                         </ul>
-                        <a href="{{ route('locations.edit', $location->id) }}">Edit</a>
-                        <form action="{{ route('locations.destroy', $location->id) }}" method="POST"
+                        <a href="{{ route('locations.edit', ['location' => $location->id, 'user' => $location->user_id]) }}">Edit</a>
+
+                        <form action="{{ route('locations.destroy', ['location' => $location->id, 'user' => $location->user_id]) }}" method="POST"
                               onsubmit="return confirm('Are you sure you want to delete this location?');">
                             @csrf
-                            @method('DELETE')  <!-- Spoof the DELETE method -->
+                            @method('DELETE')
 
                             <button type="submit"
                                     class="mt-6 bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200">
@@ -48,7 +46,7 @@
             </div>
         </div>
 
-        <!-- Location Image (Right Side) -->
+        <!-- Location Image -->
         @if ($location->image)
             <img src="{{ asset('storage/' . $location->image) }}" alt="{{ $location->name }}" class="img-small">
         @endif

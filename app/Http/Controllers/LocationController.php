@@ -72,12 +72,11 @@ class LocationController extends Controller
      */
     public function create()
     {
-        if (request()->user()) {
-            $categories = Category::all();
-            return view('create', compact('categories'));
-        } else {
+        if (!request()->user()) {
             return abort(404);
         }
+        $categories = Category::all();
+        return view('create', compact('categories'));
     }
 
     /**
@@ -85,14 +84,17 @@ class LocationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!request()->user()) {
+            return abort(404);
+        }
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'address' => 'required|string',
-            'coordinates' => 'required|string',
+            'name' => 'required|string|max:255|min:3',
+            'description' => 'required|string|max:999|min:10',
+            'address' => 'required|string|max:255',
+            'coordinates' => 'required|string|max:35',
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
             'category_id' => 'required|integer',
         ]);
 
@@ -115,8 +117,8 @@ class LocationController extends Controller
         $location->user_id = request()->user()->id;
         $location->save();// ->error('success', 'Location added successfully!');
 
-        // Redirect to a page with a success message
-        return redirect()->route('locations.index');//->with('success', 'Location added successfully!');
+
+        return redirect()->route('locations.index');
     }
 
     /**
@@ -124,6 +126,13 @@ class LocationController extends Controller
      */
     public function show($id)
     {
+        $location = Location::findOrFail($id);
+        $user = request()->user();
+
+        // Check if the location is active, or the user is an admin, or the user is the creator of the location
+        if (!$location->status && (!isset($user) || ($user->admin != 1 && $location->user_id != $user->id))) {
+            return abort(404);
+        }
         $location = Location::with('category', 'user')->findOrFail($id);
         return view('details', compact('location'));
     }
@@ -133,7 +142,9 @@ class LocationController extends Controller
      */
     public function edit($id)
     {
-
+        if (!request()->user()) {
+            return abort(404);
+        }
         $location = Location::findOrFail($id);
         $categories = Category::all();
         if (auth()->check()) {
@@ -152,17 +163,21 @@ class LocationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!request()->user()) {
+            return abort(404);
+        }
+
         $location = Location::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'address' => 'nullable|string',
-            'coordinates' => 'nullable|string',
-            'country' => 'nullable|string',
-            'city' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // Corrected validation for image
-            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255|min:3',
+            'description' => 'required|string|max:999|min:10',
+            'address' => 'required|string|max:255',
+            'coordinates' => 'required|string|max:35',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
+            'category_id' => 'required|integer',
         ]);
 
         $location->name = $request->input('name');
@@ -174,10 +189,6 @@ class LocationController extends Controller
         $location->category_id = $request->input('category_id');
 
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
-//            if ($location->image) {
-//                Storage::delete('public/' . $location->image);
-//            }
 
             // Store the new image
             $image = $request->file('image');
@@ -185,22 +196,24 @@ class LocationController extends Controller
             $location->image = $imagePath;
         }
 
-        // Update location data
         $location->update();
 
-        return redirect()->route('locations.index')->with('success', 'Location updated successfully!');
+        return redirect()->route('locations.index');
     }
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id, $user_id)
     {
-        $location = Location::findOrFail($id);  // Find the location by its ID
-        $location->delete();  // Delete the location
+        if (request()->user()->admin != 1 && $user_id != request()->user()->id) {
+            return abort(404);
+        }
+        $location = Location::findOrFail($id);
+        $location->delete();
 
-        return redirect()->route('locations.index')->with('success', 'Location deleted successfully!');  // Redirect back to the list with a success message
+        return redirect()->route('locations.index');
     }
 
     public function toggleStatus($id)
@@ -211,7 +224,7 @@ class LocationController extends Controller
         $location->status = !$location->status;
         $location->save();
 
-        return redirect()->back()->with('status', 'Item status updated successfully!');
+        return redirect()->back();
     }
 
 
